@@ -2,6 +2,7 @@
 #' @description This function calculates node embeddings in a graph by using 
 #' VERSE (Versatile Graph Embeddings from Similarity Measures)
 #' @param x an object of class dgRMatrix
+#' @param similarity type of similarity. Currently defaults to pagerank.
 #' @param dimension integer with the dimension of the embedding
 #' @param epochs number of epochs
 #' @param learning_rate the learning rate of the algorithm
@@ -25,7 +26,9 @@
 #' x <- as_adj(karate)
 #' x <- as(x, "RsparseMatrix")
 #' 
-#' embeddings <- deepwalker_verse(x, dimension = 64, epochs = 1000)
+#' node_embeddings <- deepwalker_verse(x, dimension = 64, epochs = 1000,
+#'     learning_rate = 0.0025, samples = 3, alpha = 0.85)
+#' str(node_embeddings$embeddings)
 deepwalker_verse <- function(x, 
                              similarity = c("pagerank", "adjacency", "simrank"),
                              dimension = 128,
@@ -43,10 +46,9 @@ deepwalker_verse <- function(x,
                             samples = samples,
                             alpha = alpha)
   }else if(similarity == "adjacency"){
-    
+    .NotYetImplemented() 
   }else if(similarity == "simrank"){
-    
+    .NotYetImplemented() 
   }
-  
   emb
 }

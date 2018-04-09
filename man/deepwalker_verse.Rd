@@ -11,6 +11,8 @@ deepwalker_verse(x, similarity = c("pagerank", "adjacency", "simrank"),
 \arguments{
 \item{x}{an object of class dgRMatrix}
 
+\item{similarity}{type of similarity. Currently defaults to pagerank.}
+
 \item{dimension}{integer with the dimension of the embedding}
 
 \item{epochs}{number of epochs}
@@ -43,5 +45,7 @@ data(karate, package = "igraphdata")
 x <- as_adj(karate)
 x <- as(x, "RsparseMatrix")
 
-embeddings <- deepwalker_verse(x, dimension = 64, epochs = 1000)
+node_embeddings <- deepwalker_verse(x, dimension = 64, epochs = 1000,
+    learning_rate = 0.0025, samples = 3, alpha = 0.85)
+str(node_embeddings$embeddings)
 }
