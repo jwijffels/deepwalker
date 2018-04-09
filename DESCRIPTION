@@ -1,6 +1,6 @@
 Package: deepwalker
 Type: Package
-Title: Learn Graph Embeddings with Deep Learning
+Title: Learn Graph Embeddings
 Version: 0.1
 Maintainer: Jan Wijffels <jwijffels@bnosac.be>
 Authors@R: c(person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'jwijffels@bnosac.be'), 
@@ -9,10 +9,11 @@ Authors@R: c(person('Jan', 'Wijffels', role = c('aut', 'cre', 'cph'), email = 'j
 Description: Embeddings on graphs can be use to improve link prediction, node classification and node clustering. 
     The following algorithms which calculate the embedding for nodes in a graph are provided: 
     deepwalker, verse and node2vec.
-License: MIT
+License: MIT + file LICENSE
 URL: https://github.com/bnosac/deepwalker
 Encoding: UTF-8
 Depends: R (>= 2.10)
+Suggests: igraph, igraphdata, Matrix
 Imports: Rcpp (>= 0.11.5)
 LinkingTo: Rcpp
 SystemRequirements: C++11

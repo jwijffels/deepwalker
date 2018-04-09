@@ -5,21 +5,22 @@
 
 using namespace Rcpp;
 
-// deepwalker_verse
-SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j);
-RcppExport SEXP _deepwalker_deepwalker_verse(SEXP dgrmatrix_pSEXP, SEXP dgrmatrix_jSEXP) {
+// embeddings_verse
+SEXP embeddings_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j, int n_epochs);
+RcppExport SEXP _deepwalker_embeddings_verse(SEXP dgrmatrix_pSEXP, SEXP dgrmatrix_jSEXP, SEXP n_epochsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type dgrmatrix_p(dgrmatrix_pSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type dgrmatrix_j(dgrmatrix_jSEXP);
-    rcpp_result_gen = Rcpp::wrap(deepwalker_verse(dgrmatrix_p, dgrmatrix_j));
+    Rcpp::traits::input_parameter< int >::type n_epochs(n_epochsSEXP);
+    rcpp_result_gen = Rcpp::wrap(embeddings_verse(dgrmatrix_p, dgrmatrix_j, n_epochs));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_deepwalker_deepwalker_verse", (DL_FUNC) &_deepwalker_deepwalker_verse, 2},
+    {"_deepwalker_embeddings_verse", (DL_FUNC) &_deepwalker_embeddings_verse, 3},
     {NULL, NULL, 0}
 };
 

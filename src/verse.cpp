@@ -203,12 +203,13 @@ void Train() {
 
 
 // [[Rcpp::export]]
-SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j) {
+SEXP embeddings_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j,
+                      int n_epochs = 100000) {
   step = 0;
   silent = false;
   n_threads = 1;
   global_lr = 0.0025f;
-  n_epochs = 100000;
+  //n_epochs = ;
   n_hidden = 128;
   n_samples = 3;
   ppralpha = 0.85f;
@@ -269,17 +270,25 @@ SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrma
   for (int i = 0; i < (int)(nv+1); i++)
     _offsets[i] = offsets[i];
   
+  /*
   Rcpp::NumericVector embeddings(nv * n_hidden);  
   for (int i = 0; i < (int)(nv * n_hidden); i++){
     embeddings[i] = w0[i];
   }
+   */
+  Rcpp::NumericMatrix embeddings(nv, n_hidden);
+  for (int i = 0; i < nv; i++){
+    for (int j = 0; j < n_hidden; j++){
+      embeddings(i, j) = w0[i*nv + j];
+    }
+  }
 
   // Return
   Rcpp::List go = Rcpp::List::create(Rcpp::Named("vertices") = nv,
-                                     Rcpp::Named("vertices_embeddings") = embeddings,
-                                     Rcpp::Named("edges_nr") = ne, 
-                                     Rcpp::Named("edges") = _edges, 
-                                     Rcpp::Named("offsets") = _offsets
-                                     );
+                                     Rcpp::Named("edges") = ne, 
+                                     Rcpp::Named("dimension") = n_hidden, 
+                                     Rcpp::Named("embedding") = embeddings,
+                                     Rcpp::Named("edges_data") = _edges, 
+                                     Rcpp::Named("offsets_data") = _offsets);
   return go;
 }
