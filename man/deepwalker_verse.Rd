@@ -4,13 +4,31 @@
 \alias{deepwalker_verse}
 \title{Versatile Graph Embeddings from Similarity Measures}
 \usage{
-deepwalker_verse(x)
+deepwalker_verse(x, similarity = c("pagerank", "adjacency", "simrank"),
+  dimension = 128, epochs = 1e+05, learning_rate = 0.0025, samples = 3,
+  alpha = 0.85)
 }
 \arguments{
 \item{x}{an object of class dgRMatrix}
+
+\item{dimension}{integer with the dimension of the embedding}
+
+\item{epochs}{number of epochs}
+
+\item{learning_rate}{the learning rate of the algorithm}
+
+\item{samples}{integer}
+
+\item{alpha}{the alpha parameter of the algorithm}
 }
 \value{
-TODO
+a list with elements 
+\enumerate{
+\item{vertices: }{the number of vertices in the graph}
+\item{edges: }{the number of edges (links) between the vertices in the graph}
+\item{embedding: }{the embeddings of the vertices}
+\item{edges_data and offsets_data: }{for debugging purposes now}
+}
 }
 \description{
 This function calculates node embeddings in a graph by using 
@@ -25,5 +43,5 @@ data(karate, package = "igraphdata")
 x <- as_adj(karate)
 x <- as(x, "RsparseMatrix")
 
-embeddings <- deepwalker_verse(x)
+embeddings <- deepwalker_verse(x, dimension = 64, epochs = 1000)
 }

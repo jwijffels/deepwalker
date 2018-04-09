@@ -137,17 +137,6 @@ inline int sample_rw(int node) {
   return n2;
 }
 
-int ArgPos(char *str, int argc, char **argv) {
-  for (int a = 1; a < argc; a++)
-    if (!strcmp(str, argv[a])) {
-      if (a == argc - 1) {
-        cout << "Argument missing for " << str << endl;
-        exit(1);
-      }
-      return a;
-    }
-  return -1;
-}
 
 inline void update(float *w_s, float *w_t, int label, const float bias) {
   float score = -bias;
@@ -182,7 +171,7 @@ void Train() {
           break;
         if (tid == 0)
           if (!silent)
-            cout << fixed << "\r Progress " << std::setprecision(2)
+            Rcpp::Rcout << fixed << "\r Progress " << std::setprecision(2)
                  << step / (float)(total_steps + 1) * 100 << "%";
         last_ncount = ncount;
       }
@@ -203,16 +192,21 @@ void Train() {
 
 
 // [[Rcpp::export]]
-SEXP embeddings_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j,
-                      int n_epochs = 100000) {
+SEXP embeddings_verse_pagerank(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j,
+                      int dimension = 128,
+                      int epochs = 100000, 
+                      float learning_rate = 0.0025,
+                      int samples = 3,
+                      float alpha = 0.85,
+                      int threads = 1) {
   step = 0;
   silent = false;
-  n_threads = 1;
-  global_lr = 0.0025f;
-  //n_epochs = ;
-  n_hidden = 128;
-  n_samples = 3;
-  ppralpha = 0.85f;
+  n_threads = threads;
+  global_lr = learning_rate;
+  n_epochs = epochs;
+  n_hidden = dimension;
+  n_samples = samples;
+  ppralpha = alpha;
   
   // 
   // Set random nr
@@ -249,12 +243,12 @@ SEXP embeddings_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrma
   for (int i = 0; i < (int)nv; i++)
     degrees[i] = offsets[i + 1] - offsets[i];
   total_steps = n_epochs * (long long)nv;
-  cout << "Total steps (mil): " << total_steps / 1000000. << endl;
+  Rcpp::Rcout << "Total steps (mil): " << total_steps / 1000000. << endl;
   chrono::steady_clock::time_point begin = chrono::steady_clock::now();
   Train();
   chrono::steady_clock::time_point end = chrono::steady_clock::now();
   
-  cout << endl
+  Rcpp::Rcout << endl
        << "Calculations took "
        << chrono::duration_cast<std::chrono::duration<float>>(end - begin)
   .count()
@@ -277,8 +271,8 @@ SEXP embeddings_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrma
   }
    */
   Rcpp::NumericMatrix embeddings(nv, n_hidden);
-  for (int i = 0; i < nv; i++){
-    for (int j = 0; j < n_hidden; j++){
+  for (int i = 0; i < (int)nv; i++){
+    for (int j = 0; j < (int)n_hidden; j++){
       embeddings(i, j) = w0[i*nv + j];
     }
   }
