@@ -205,8 +205,17 @@ void Train() {
 // [[Rcpp::export]]
 SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrmatrix_j) {
   step = 0;
+  silent = false;
+  n_threads = 1;
+  global_lr = 0.0025f;
+  n_epochs = 100000;
+  n_hidden = 128;
+  n_samples = 3;
+  ppralpha = 0.85f;
   
-  string network_file, embedding_file;
+  // 
+  // Set random nr
+  //
   ull x = time(nullptr);
   for (int i = 0; i < 2; i++) {
     ull z = x += UINT64_C(0x9E3779B97F4A7C15);
@@ -216,16 +225,6 @@ SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrma
   }
   init_sigmoid_table();
 
-  silent = false;
-  n_threads = 1;
-  global_lr = 0.0025f;
-  n_epochs = 100000;
-  n_hidden = 128;
-  n_samples = 3;
-  ppralpha = 0.85f;
-  
-  embedding_file = "C:/Users/Jan/Dropbox/Work/RForgeBNOSAC/BNOSAC/deepwalker/inst/extdata/karate.emb";
-  
   // 
   // Create edges and offsets
   //
@@ -239,6 +238,9 @@ SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrma
   for (int i = 0; i < (int)(nv+1); i++)
     offsets[i] = dgrmatrix_p[i];
 
+  //
+  // Compute embeddings
+  //
   w0 = static_cast<float *>(aligned_malloc(nv * n_hidden * sizeof(float), DEFAULT_ALIGN));
   for (int i = 0; i < (int)(nv * n_hidden); i++)
     w0[i] = drand() - 0.5;
@@ -257,7 +259,9 @@ SEXP deepwalker_verse(Rcpp::IntegerVector dgrmatrix_p, Rcpp::IntegerVector dgrma
   .count()
        << " s to run" << endl;
 
-  /* Copy data and embeddings */
+  //
+  // Copy data and embeddings
+  //
   Rcpp::IntegerVector _edges(ne);
   Rcpp::IntegerVector _offsets(nv+1);
   for (int i = 0; i < (int)ne; i++)
